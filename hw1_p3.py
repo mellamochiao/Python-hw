@@ -6,7 +6,6 @@ v = float(v)
 c = 299792458
 r = 1/((1-(v**2)/(c**2)))**(1/2)
 
-# lightyear to meter : *c*3600*365
 # Calculate Δtp and print
 print('Percentage of light speed =', v/c)
 print('AlphaCentauri :', 4.3/r)

@@ -6,6 +6,14 @@ if x < 7 or x <= 10 and y > 8:
 else:
    print("yuck")
 
+print('(b)')
+phrase = "python"
+vowels = "aeiou"
+count = 0
+while (not phrase[count] in vowels):
+   count = count + 1
+print(count)
+
 print('(c)')
 if 'alpha' < 'zebra':
    print('alpha < zebra')

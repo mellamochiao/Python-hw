@@ -24,14 +24,12 @@ def tree(l, t, g, w, h):
 		height += 1
 	return ''
 
-
-
 try:
 	layer = int(input('Enter the number of layers (2 to 5) : '))
 	top_length = int(input('Enter the side length of the top layer :'))
 	growth = int(input('Enter the growth of each layer : '))
 	width = int(input('Enter the trunk width (odd number, 3 to 9) : '))
 	height = int(input('Enter the trunk height (4 to 10) : '))
-	print(tree(layer, top_length, growth, width, height))
+	print(tree(layer, top_length, growth, width, height), end = '')
 except ValueError:
 	print("Please enter a valid integer.")

@@ -1,4 +1,4 @@
-def longest_palindromic_substring(s):
+def palindromic(s):
 	l = len(s)
 	start = 0
 	length = 1
@@ -23,12 +23,12 @@ def longest_palindromic_substring(s):
 			right += 1
 			left -= 1
 		i += 1
-	return s[start:start + length]
+	print('Longest Palindromic Substring is : '+s[start:start + length])
+	print('Length is : %d' %len(s[start:start + length]), end = '')
+	return ''
 
 
 s = input('Enter a string :')
-print("Longest Palindromic Substring is : {}".format(longest_palindromic_substring(s)))		
+print(palindromic(s))
 
 
-
-	

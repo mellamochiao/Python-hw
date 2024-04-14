@@ -1,4 +1,4 @@
-n = int(input('Input the total number of students (n>0) :'))
+n = int(input('Input the total number of students (n>0) : '))
 students = list(range(1, n+1))  #所有學生
 c_students = students[:]        #當前學生
 r_students = []                 #移除學生

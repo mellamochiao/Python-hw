@@ -3,30 +3,31 @@ s2 = s1.split(' ')
 s = ''.join(s2)
 n = len(s)
 
-left_max = [0] * n
-right_max = [0] * n
-   
+rmax = [0]*n
+lmax = [0]*n
+
+rmax[0] = s[0]
 i = 1
-left_max[0] = s[0]
-while i < n:
-    left_max[i] = max(left_max[i-1], s[i])
+while i < n :
+    if s[i] > rmax[i-1]:
+      rmax[i] = s[i]
+    else:
+      rmax[i] = rmax[i-1]
     i += 1
 
-right_max[n-1] = s[n-1]
-i = n - 2
-while i >= 0:
-    right_max[i] = max(right_max[i+1], s[i])
+lmax[n-1] = s[n-1]
+i = n-1
+while i > 0 :
+    if s[i-1] > lmax[i]:
+      lmax[i-1] = s[i-1]
+    else :
+      lmax[i-1] = lmax[i]
     i -= 1
 
-water_units = 0
-i = 0
-j = n - 1
-
-while i < j:
-    if s[i] < s[j]:
-        water_units += max(0, int(min(left_max[i], right_max[j])) - int(s[i]))
-        i += 1
-    else:
-        water_units += max(0, int(min(left_max[i], right_max[j])) - int(s[j]))
-        j -= 1
-print(water_units)
+i = 1
+water = 0
+while i < n :
+    if min(lmax[i], rmax[i]) > s[i]:
+       water += (int (min(lmax[i], rmax[i])) - int(s[i]))
+    i += 1
+print(water)

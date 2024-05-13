@@ -1,125 +1,98 @@
 import random
 
+def create_board():
+    board_size = 9
+    num_mines = 10
+    board = [[0 for _ in range(board_size)] for _ in range(board_size)]
+    mines_placed = 0
 
-class boardSpot(object):
-    value = 0
-    selected = False
-    mine = False
+    while mines_placed < num_mines:
+        x = random.randint(0, board_size - 1)
+        y = random.randint(0, board_size - 1)
+        if board[x][y] != -1:
+            board[x][y] = -1
+            mines_placed += 1
+            for i in range(x - 1, x + 2):
+                for j in range(y - 1, y + 2):
+                    if 0 <= i < board_size and 0 <= j < board_size and board[i][j] != -1:
+                        board[i][j] += 1
 
-    def __init__(self):
-        self.selected = False
+    return board
 
-    def __str__(self):
-        return str(boardSpot.value)
-
-    def isMine(self):
-        if boardSpot.value == -1:
-            return True
-        return False
-
-
-class boardClass(object):
-    def __init__(self, m_boardSize, m_numMines):
-        self.board = [[boardSpot() for i in range(m_boardSize)] for j in range(m_boardSize)]
-        self.boardSize = m_boardSize
-        self.numMines = m_numMines
-        self.selectableSpots = m_boardSize * m_boardSize - m_numMines
-        i = 0
-        while i < m_numMines:
-            x = random.randint(0, self.boardSize-1)
-            y = random.randint(0, self.boardSize-1)
-            if not self.board[x][y].mine:
-                self.addMine(x, y)
-                i += 1
+def print_board(board, revealed, flags):
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if revealed[i][j]:
+                print(board[i][j], end=" ")
+            elif flags and flags[i][j]:
+                print("F", end=" ")
             else:
-                i -= 1
+                print("-", end=" ")
+        print()
 
-    def __str__(self):
-        returnString = " "
-        divider = "\n---"
 
-        for i in range(0, self.boardSize):
-            returnString += " | " + str(i)
-            divider += "----"
-        divider += "\n"
 
-        returnString += divider
-        for y in range(0, self.boardSize):
-            returnString += str(y)
-            for x in range(0, self.boardSize):
-                if self.board[x][y].mine and self.board[x][y].selected:
-                    returnString += " |" + str(self.board[x][y].value)
-                elif self.board[x][y].selected:
-                    returnString += " | " + str(self.board[x][y].value)
-                else:
-                    returnString += " |  "
-            returnString += " |"
-            returnString += divider
-        return returnString
-
-    def addMine(self, x, y):
-        self.board[x][y].value = -1
-        self.board[x][y].mine = True
-        for i in range(x-1, x+2):
-            if i >= 0 and i < self.boardSize:
-                if y-1 >= 0 and not self.board[i][y-1].mine:
-                    self.board[i][y-1].value += 1
-                if y+1 < self.boardSize and not self.board[i][y+1].mine:
-                    self.board[i][y+1].value += 1
-        if x-1 >= 0 and not self.board[x-1][y].mine:
-            self.board[x-1][y].value += 1
-        if x+1 < self.boardSize and not self.board[x+1][y].mine:
-            self.board[x+1][y].value += 1
-
-    def makeMove(self, x, y):
-        self.board[x][y].selected = True
-        self.selectableSpots -= 1
-        if self.board[x][y].value == -1:
-            return False
-        if self.board[x][y].value == 0:
-            for i in range(x-1, x+2):
-                if i >= 0 and i < self.boardSize:
-                    if y-1 >= 0 and not self.board[i][y-1].selected:
-                        self.makeMove(i, y-1)
-                    if y+1 < self.boardSize and not self.board[i][y+1].selected:
-                        self.makeMove(i, y+1)
-            if x-1 >= 0 and not self.board[x-1][y].selected:
-                self.makeMove(x-1, y)
-            if x+1 < self.boardSize and not self.board[x+1][y].selected:
-                self.makeMove(x+1, y)
-            return True
+def make_move(board, revealed, x, y, flag=False):
+    if flag:
+        # Flagging a spot
+        if not revealed[x][y]:
+            revealed[x][y] = True
+            print("Flag placed at position ({}, {}).".format(x, y))
         else:
-            return True
-
-    def hitMine(self, x, y):
-        return self.board[x][y].value == -1
-
-    def isWinner(self):
-        return self.selectableSpots == 0
-
-
-#play game
-def playGame():
-    boardSize = int(input("Choose the Width of the board: "))
-    numMines = int(input("Choose the number of mines: "))
-    gameOver = False
-    winner = False
-    Board = boardClass(boardSize, numMines)
-    while not gameOver:
-        print(Board)
-        print("Make your move:")
-        x = int(input("x: "))
-        y = int(input("y: "))
-        Board.makeMove(x, y)
-        gameOver = Board.hitMine(x, y)
-        if Board.isWinner() and gameOver == False:
-            gameOver = True
-            winner = True
-
-    print(Board)
-    if winner:
-        print("Congratulations, You Win!")
+            print("Flag already placed at position ({}, {}).".format(x, y))
     else:
-        print("You hit a mine, Game Over!")
+        if revealed[x][y]:
+            print("This spot has already been revealed.")
+            return
+        revealed[x][y] = True
+        if board[x][y] == -1:
+            print("Game Over! You hit a mine.")
+            print_board(board, revealed, [])
+            return True
+        elif board[x][y] == 0:
+            reveal(board, revealed, x, y)
+    return False
 
-playGame()
+
+def reveal(board, revealed, x, y):
+    for i in range(x - 1, x + 2):
+        for j in range(y - 1, y + 2):
+            if 0 <= i < len(board) and 0 <= j < len(board) and not revealed[i][j]:
+                revealed[i][j] = True
+                if board[i][j] == 0:
+                    reveal(board, revealed, i, j)
+
+def play_game():
+    board = create_board()
+    revealed = [[False for _ in range(9)] for _ in range(9)]
+    flags = [[False for _ in range(9)] for _ in range(9)]
+
+    while True:
+        print_board(board, revealed, flags)
+        action = input("Enter 'r' to reveal, 'f' to flag: ")
+        if action == 'R':
+            y = int(input("Enter row (x): "))
+            x = int(input("Enter column (y): "))
+            if not (0 <= x < 9 and 0 <= y < 9):
+                print("Invalid position. Try again.")
+                continue
+            if make_move(board, revealed, x, y):
+                break
+        elif action == 'F':
+            y = int(input("Enter row (x) to place flag: "))
+            x = int(input("Enter column (y) to place flag: "))
+            if not (0 <= x < 9 and 0 <= y < 9):
+                print("Invalid position. Try again.")
+                continue
+            flags[x][y] = True  # Place flag
+        else:
+            print("Invalid action. Try again.")
+
+    if all(revealed[i][j] or board[i][j] == -1 for i in range(9) for j in range(9)):
+        print("Congratulations! You win!")
+    else:
+        print("Game over!")
+
+
+
+play_game()

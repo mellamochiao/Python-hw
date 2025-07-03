@@ -1,4 +1,9 @@
-# Repository Structure
+# Introduction to Computer Computer Science – Homework Collection
+
+This repository contains all homework assignments from the Introduction to Computer Computer Science course.  
+
+## Repository Structure
+```
 ├── hw0.py
 ├── hw1_p2.py
 ├── hw1_p3.py
@@ -22,3 +27,4 @@
 ├── hw4_1.py
 ├── hw4_1ref.py
 └── hw4_2.py
+```
